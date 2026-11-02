@@ -1,11 +1,5 @@
 import Contact from '../models/Contact.js'
 
-export async function test(req,res){
-    const response = {
-        message: "Endpoint Reached"
-    }
-    res.status(200).json(response)
-}
 
 export async function getContacts(req,res){
     try{
@@ -17,16 +11,11 @@ export async function getContacts(req,res){
 }
 
 export async function getContactById(req,res){
-    try{
-        const contact = await Contact.findOne({contactId: req.params.id});
-        if(!contact){
-            return res.status(404).json({error:"contact not found"})
-        }
-        else res.status(200).json(contact);
-        
-    }catch(error){
-        res.status(500).json(error);
+    const contact = await Contact.findOne({contactId: req.params.id});
+    if(!contact){
+        return res.status(404).json({error:"contact not found"})
     }
+    else res.status(200).json(contact);
 }
 
 export async function searchContact(req,res){
@@ -48,22 +37,18 @@ export async function searchContact(req,res){
 }
 
 export async function updateContact(req,res){
-    try{
-        const {contactId,firstName,lastName,mobile} = req.body
-        if(contactId)
-            return res.status(400).json({error: "cannot change contactId"})
-        if(!firstName || !lastName || !mobile)
-            return res.status(400).json({error: "not enough information"});
-        if(mobile.length<9 || mobile.length>10)
-            return res.status(400).json({error: "invalid mobile number"});
-        const contact = await Contact.findOneAndUpdate({contactId: req.params.id},req.body, {new: true});
-        if(!contact){
-            return res.status(404).json({error:"contact not found"})
-        }
-        else res.status(200).json(contact)
-    }catch(error){
-        res.status(500).json(error);
+    const {contactId,firstName,lastName,mobile} = req.body
+    if(contactId)
+        return res.status(400).json({error: "cannot change contactId"})
+    if(!firstName || !lastName || !mobile)
+        return res.status(400).json({error: "not enough information"});
+    if(mobile.length<9 || mobile.length>10)
+        return res.status(400).json({error: "invalid mobile number"});
+    const contact = await Contact.findOneAndUpdate({contactId: req.params.id},req.body, {new: true});
+    if(!contact){
+        return res.status(404).json({error:"contact not found"})
     }
+    else res.status(200).json(contact)
 }
 
 export async function deleteContact(req,res){
@@ -75,18 +60,14 @@ export async function deleteContact(req,res){
 }
 
 export async function addContacts(req,res){
-    try{
-        const exist = await Contact.findOne({contactId: req.body.contactId})
-        if(exist) return res.status(409).json({error: "duplicate contact"});
-        const {contactId,firstName,lastName,mobile} = req.body;
-        if(!contactId || !firstName || !lastName || !mobile)
-            return res.status(400).json({error: "not enough information"})
-        if(mobile.length<9 || mobile.length>10)
-            return res.status(400).json({error: "invalid mobile number"})
-        const contact = await new Contact(req.body).save();
-        res.status(201).json(contact)
-    }catch (error){
-        res.status(500).json(error)
-    }
+    const exist = await Contact.findOne({contactId: req.body.contactId})
+    if(exist) return res.status(409).json({error: "duplicate contact"});
+    const {contactId,firstName,lastName,mobile} = req.body;
+    if(!contactId || !firstName || !lastName || !mobile)
+        return res.status(400).json({error: "not enough information"})
+    if(mobile.length<9 || mobile.length>10)
+        return res.status(400).json({error: "invalid mobile number"})
+    const contact = await new Contact(req.body).save();
+    res.status(201).json(contact)
 }
 

@@ -1,8 +1,7 @@
-import {test, getContacts, addContacts, getContactById, updateContact, deleteContact, searchContact} from "../controllers/contactController.js"
+import { getContacts, addContacts, getContactById, updateContact, deleteContact, searchContact} from "../controllers/contactController.js"
 import { loginUser } from "../controllers/userController.js"
 
 export default function ContactRoutes(app){
-    app.route('/').get(test)
 
     app.route('/contacts/getcontacts').get(getContacts)
 
