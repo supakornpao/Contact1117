@@ -1,4 +1,6 @@
 import mongoose from 'mongoose'
+import bcrypt from 'bcryptjs';
+import crypto from 'crypto'
 
 const Schema = mongoose.Schema
 
@@ -14,14 +16,9 @@ const UserSchema = new Schema({
   },
 })
 
-UserSchema.pre('save', async function () {
-  if (!this.isModified('password')) return;
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
 
 UserSchema.methods.comparePassword = function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
+  return crypto.createHash('md5').update(candidatePassword).digest('hex') === this.password;
 };
 
 const User = mongoose.models.Users || mongoose.model('User', UserSchema)
